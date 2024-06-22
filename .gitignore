@@ -31,3 +31,6 @@ coverage
 
 # remove .key files
 *.key
+
+# remove .env files
+.env
