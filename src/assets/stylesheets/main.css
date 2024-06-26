@@ -23,6 +23,76 @@ body {
   transition: color 0.5s, background-color 0.5s;
 }
 
+img {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
+.playlist-hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+.playlist-hero img {
+  -webkit-mask-image: linear-gradient(var(--color-background), transparent);
+          mask-image: linear-gradient(var(--color-background), transparent);
+  width: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+@media only screen and (min-width: 768px) {
+  .playlist-hero img {
+    max-height: 400px;
+  }
+}
+@media only screen and (min-width: 1440px) {
+  .playlist-hero img {
+    max-height: 350px;
+  }
+}
+.playlist-hero h1 {
+  color: var(--color-heading);
+}
+.playlist-author {
+  background-color: var(--color-background-mute);
+}
+.playlist-author_img > * {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+}
+.playlist-author_text p {
+  color: var(--color-heading);
+}
+.playlist-author_text small {
+  color: var(--color-text);
+}
+.playlist-author_text .substitute {
+  width: 50%;
+  height: 21px;
+  border-radius: 5px;
+}
+
+.substitute {
+  display: flex;
+  background: linear-gradient(to bottom right, var(--color-background), var(--color-background-soft));
+  background-size: 200% 200%;
+  animation: loading 1s ease-in-out infinite;
+}
+
+@keyframes loading {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 0%;
+  }
+}
 @media (prefers-color-scheme: dark) {
   :root {
     --color-background: #181818;

@@ -1,7 +1,10 @@
 <template>
-  <div class="container vh-100">
-    <component v-bind:is="screens[position]" @to="handleTo" />
-  </div>
+  <component
+    v-bind:is="screens[position]"
+    v-bind:data="data"
+    @to="handleTo"
+    @data="setData"
+  />
 </template>
 
 <script>
@@ -20,14 +23,40 @@
     data: function() {
       return {
         screens: ['home', 'playlist', 'channel', 'item'],
-        position: 0
+        position: 0,
+        data: {},
+      }
+    },
+    provide() {
+      return {
+        formatDate: this.formatDate,
+        strim: this.strim
       }
     },
     methods: {
       handleTo: function(to) {
         this.position = to;
+      },
+      setData: function(data) {
+        this.data = data;
+      },
+      formatDate: function(dateString) {
+        return new Date(dateString).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        });
+      },
+      strim: function(string, start, width, trim_maker = "") {
+        width -= trim_maker.length;
+
+        if (string.length > width) {
+          return string.substring(start, width) + trim_maker;
+        } else {
+          return string;
+        }
       }
-    }
+    },
   }
 </script>
 
