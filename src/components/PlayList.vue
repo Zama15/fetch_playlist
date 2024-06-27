@@ -12,17 +12,25 @@
     <small class="d-flex justify-content-center">
       {{ data.id }}
     </small>
-    <p class="d-flex justify-content-center text-break">
+    <p class="d-flex justify-content-center text-break text-center p-2 m-0">
       {{ this.strim(playlist.description, 0, 100, '...') }}
     </p>
   </div>
+  <component 
+    v-bind:is="'author'"
+    v-bind:id="playlist.channelId"
+  />
 </template>
 
 <script>
+import author from './sidekicks/AuthorSmall.vue';
 
 export default {
   props: ['data'],
   inject: ['formatDate', 'strim'],
+  components: {
+    author
+  },
   data: function() {
     return {
       playlist: this.data.snippet

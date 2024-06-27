@@ -6,6 +6,7 @@
   --color-border-hover: rgba(60, 60, 60, 0.29);
   --color-heading: #2c3e50;
   --color-text: #2c3e50;
+  --color-overlay: rgba(255, 255, 255, 0.596);
 }
 
 *,
@@ -57,22 +58,46 @@ img {
 }
 .playlist-author {
   background-color: var(--color-background-mute);
+  background-position: center;
+  background-size: cover;
+  position: relative;
+}
+.playlist-author > *:not(.playlist-author_overlay) {
+  z-index: 0;
+}
+.playlist-author_overlay {
+  background-color: var(--color-overlay);
+  filter: brightness(0.6) contrast(1.2);
+  height: 98%;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 98%;
 }
 .playlist-author_img > * {
-  width: 60px;
-  height: 60px;
   border-radius: 50%;
+  height: 60px;
+  width: 60px;
 }
-.playlist-author_text p {
+.playlist-author_title {
   color: var(--color-heading);
 }
-.playlist-author_text small {
+.playlist-author_title .substitute {
+  border-radius: 5px;
+  height: 31px;
+  width: 50%;
+}
+.playlist-author_info p {
+  color: var(--color-heading);
+}
+.playlist-author_info small {
   color: var(--color-text);
 }
-.playlist-author_text .substitute {
-  width: 50%;
-  height: 21px;
+.playlist-author_info .substitute {
   border-radius: 5px;
+  height: 21px;
+  width: 80%;
 }
 
 .substitute {
@@ -102,5 +127,6 @@ img {
     --color-border-hover: rgba(84, 84, 84, 0.65);
     --color-heading: #ffffff;
     --color-text: rgba(235, 235, 235, 0.64);
+    --color-overlay: rgba(24, 24, 24, 0.596);
   }
 }/*# sourceMappingURL=main.css.map */
