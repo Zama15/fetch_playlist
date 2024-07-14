@@ -1,6 +1,6 @@
 <template>
   <div class="container vh-100">
-    <div class="row h-100 d-flex justify-content-center align-items-center">
+    <div class="row h-100 d-flex justify-content-center align-items-center mx-3">
       <div class="col-md-6">
   
         <h1 class="text-center fw-bold">Get Playlists</h1>
@@ -70,7 +70,6 @@
               } else {
                 this.$emit('data', data.items[0]);
                 this.$emit('to', 1);
-                console.log(data);
               }
             }).catch(error => {
               console.error('Error:', error);
@@ -96,7 +95,6 @@
                 this.error = true;
                 this.errorMessage = data.error.message;
               } else {
-                console.log(data.items);
                 this.$emit('data', data.items);
                 this.$emit('to', 2)
               }

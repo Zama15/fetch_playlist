@@ -99,6 +99,50 @@ img {
   height: 21px;
   width: 80%;
 }
+.playlist-items {
+  border-top: 1px solid var(--color-border);
+}
+.playlist-items_item:not(.playlist-items_item:first-child) {
+  border-top: 1px solid var(--color-border);
+}
+.playlist-items_item:first-child {
+  margin-top: 8px;
+}
+.playlist-items_item-thumbnail > * {
+  border-radius: 5px;
+  height: 80px;
+  -o-object-fit: cover;
+     object-fit: cover;
+  width: 80px;
+}
+.playlist-items_item-title {
+  color: var(--color-heading);
+  overflow: hidden;
+  max-height: 59px;
+}
+.playlist-items_item-title .substitute {
+  border-radius: 5px;
+  height: 26px;
+  width: 80%;
+}
+.playlist-items_item-authorTitle {
+  color: var(--color-text);
+  overflow: hidden;
+  max-height: 21px;
+}
+.playlist-items_item-authorTitle .substitute {
+  border-radius: 5px;
+  height: 21px;
+  width: 60%;
+}
+.playlist-items_item-info {
+  color: var(--color-text);
+}
+.playlist-items_item-info .substitute {
+  border-radius: 5px;
+  height: 21px;
+  width: 80%;
+}
 
 .substitute {
   display: flex;

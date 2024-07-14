@@ -42,8 +42,6 @@ export default {
         .then(data => {
           const author = data.items[0];
 
-          console.log(author);
-
           this.authorBanner = author.brandingSettings.image?.bannerExternalUrl;
           this.$refs.authorTitle.innerHTML = author.snippet.title;
           this.$refs.authorId.innerHTML = author.id;

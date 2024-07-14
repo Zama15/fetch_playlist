@@ -77,4 +77,59 @@
       }
     }
   }
+
+  &-items {
+    border-top: 1px solid var(--color-border);
+
+    &_item {
+      &:not(&:first-child) {
+        border-top: 1px solid var(--color-border);
+      }
+      
+      &:first-child {
+        margin-top: 8px;
+      }
+
+      &-thumbnail > * {
+        border-radius: 5px;
+        height: 80px;
+        object-fit: cover;
+        width: 80px;
+      }
+
+      &-title {
+        color: var(--color-heading);
+        overflow: hidden;
+        max-height: 59px;
+
+        .substitute {
+          border-radius: 5px;
+          height: 26px;
+          width: 80%;
+        }
+      }
+
+      &-authorTitle {
+        color: var(--color-text);
+        overflow: hidden;
+        max-height: 21px;
+
+        .substitute {
+          border-radius: 5px;
+          height: 21px;
+          width: 60%;
+        }
+      }
+
+      &-info {
+        color: var(--color-text);
+
+        .substitute {
+          border-radius: 5px;
+          height: 21px;
+          width: 80%;
+        }
+      }
+    }
+  }
 }

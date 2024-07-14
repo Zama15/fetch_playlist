@@ -11,26 +11,26 @@
   import home from './components/Home.vue';
   import playlist from './components/PlayList.vue';
   import channel from './components/ChannelPlayList.vue';
-  import item from './components/PlayListItem.vue';
 
   export default {
     components: {
       home,
       playlist,
       channel,
-      item
     },
     data: function() {
       return {
-        screens: ['home', 'playlist', 'channel', 'item'],
+        screens: ['home', 'playlist', 'channel'],
         position: 0,
         data: {},
       }
     },
     provide() {
       return {
+        strim: this.strim,
         formatDate: this.formatDate,
-        strim: this.strim
+        formatNumber: this.formatNumber,
+        formatPeriodTime: this.formatPeriodTime,
       }
     },
     methods: {
@@ -43,7 +43,7 @@
       formatDate: function(dateString) {
         return new Date(dateString).toLocaleDateString('en-US', {
           year: 'numeric',
-          month: 'long',
+          month: 'short',
           day: 'numeric'
         });
       },
@@ -55,7 +55,23 @@
         } else {
           return string;
         }
-      }
+      },
+      formatNumber: function(number) {
+        return new Intl.NumberFormat('en-US', {
+          notation: 'compact',
+          maximumFractionDigits: 1
+        }).format(number);
+      },
+      formatPeriodTime: function(duration) {
+        const period = duration.match(/(\d+)(?=[MHS])/g);
+        const time = {
+          hours: period.length === 3 ? period[0] : 0,
+          minutes: period.length === 3 ? period[1] : period[0],
+          seconds: period.length === 3 ? period[2] : period[1],
+        };
+
+        return `${time.hours ? `${time.hours}:` : ''}${time.minutes ? `${time.minutes}:` : ''}${time.seconds ? `${time.seconds}` : ''}`;
+      },
     },
   }
 </script>
