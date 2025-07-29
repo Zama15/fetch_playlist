@@ -1,0 +1,50 @@
+$breakpoint-mobile-portrait: 480px; // default - using mobile first approach
+$breakpoint-mobile-landscape: 768px;
+
+$breakpoint-tablet-portrait: 834px;
+$breakpoint-tablet-landscape: 1024px;
+
+$breakpoint-desktop: 1440px;
+$breakpoint-desktop-lg: 1920px;
+
+@mixin mobile-portrait {
+  @media only screen and (min-width: $breakpoint-mobile-portrait) {
+    @content;
+  }
+}
+
+@mixin mobile-landscape {
+  @media only screen and (min-width: $breakpoint-mobile-landscape) {
+    @content;
+  }
+}
+
+@mixin tablet-portrait {
+  @media only screen and (min-width: $breakpoint-tablet-portrait) {
+    @content;
+  }
+}
+
+@mixin tablet-landscape {
+  @media only screen and (min-width: $breakpoint-tablet-landscape) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media only screen and (min-width: $breakpoint-desktop) {
+    @content;
+  }
+}
+
+@mixin desktop-lg {
+  @media only screen and (min-width: $breakpoint-desktop-lg) {
+    @content;
+  }
+}
+
+@mixin theme($theme) {
+  @media (prefers-color-scheme: #{$theme}) {
+    @content;
+  }
+}

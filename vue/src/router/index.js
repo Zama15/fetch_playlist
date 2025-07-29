@@ -1,0 +1,41 @@
+import { createRouter, createWebHistory } from "vue-router";
+
+import HomeView from "@/views/HomeView.vue";
+import PlayListView from "@/views/PlayListView.vue";
+import AboutView from "@/views/AboutView.vue";
+
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    {
+      path: "/",
+      name: "home",
+      component: HomeView,
+    },
+    {
+      path: "/playlist/:playlistId",
+      name: "playlist",
+      component: PlayListView,
+    },
+    // {
+    //   path: '/channel',
+    //   name: 'channel',
+    //   component: ChannelPlayListView
+    // },
+    // {
+    //   path: '/item/:id',
+    //   name: 'item',
+    //   component: PlayListItemView
+    // },
+    {
+      path: "/about",
+      name: "about",
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: AboutView,
+    },
+  ],
+});
+
+export default router;

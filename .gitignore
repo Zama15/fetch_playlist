@@ -34,3 +34,7 @@ coverage
 
 # remove .env files
 .env
+
+# remove css compile files
+*.css
+*.css.map
