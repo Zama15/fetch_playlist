@@ -1,0 +1,7 @@
+fastapi
+python-multipart
+email-validator
+ujson
+python-dotenv
+uvicorn[standard]
+yt-dlp

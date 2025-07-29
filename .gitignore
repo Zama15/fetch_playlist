@@ -33,8 +33,11 @@ coverage
 *.key
 
 # remove .env files
-.env
+# .env
 
 # remove css compile files
 *.css
 *.css.map
+
+# backend files
+__pycache__/
