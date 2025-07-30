@@ -30,6 +30,19 @@
     }
 
     &_info {      
+      &_description {
+        display: flex;
+        justify-content: center;
+
+        & > * {
+          max-width: 375px;
+  
+          @include mobile-landscape {
+            max-width: 425px;
+          }
+        }
+      }
+
       p {
         color: var(--color-heading);
       }
@@ -51,6 +64,12 @@
     background-position: center;
     background-size: cover;
     position: relative;
+    margin: 0 8px;
+
+    @include mobile-landscape {
+      max-width: 450px;
+      margin: 0 auto;
+    }
 
     & > *:not(&_overlay) {
       z-index: 0;
@@ -96,6 +115,114 @@
         border-radius: 5px;
         height: 21px;
         width: 80%;
+      }
+    }
+  }
+
+  &-video {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+
+    &_img {
+      z-index: 1;
+
+      div {
+        background-color: var(--color-background-mute);
+        background-position: center;
+        background-size: cover;
+      }
+
+      & > * {
+        border-radius: 10%;
+        height: 75px;
+        width: 75px;
+      }
+    }
+
+    &_title {
+      color: var(--color-heading);
+      
+      h3 {
+        max-width: 225px;
+
+        @include mobile-landscape {
+          max-width: 405px;
+        }
+      }
+      
+      .substitute {
+        border-radius: 5px;
+        height: 25px;
+        width: 100%;
+      }
+    }
+
+    &_info {
+      display: flex;
+      flex-direction: column;
+      width: 65%;
+
+      p {
+        font-size: small;
+        color: var(--color-heading);
+      }
+
+      small {
+        font-size: small;
+        color: var(--color-text);
+      }
+      
+      .substitute {
+        border-radius: 5px;
+        height: 19px;
+        width: 80%;
+      }
+    }
+
+    &_stats {
+      display: flex;
+      flex-direction: column;
+      align-items: end;
+      width: 35%;
+
+      p {
+        font-size: x-small;
+        color: var(--color-heading);
+      }
+
+      small {
+        font-size: x-small;
+        color: var(--color-text);
+      }
+
+      .substitute {
+        border-radius: 5px;
+        height: 13px;
+        width: 70%;
+      }
+    }
+  }
+
+  &-wrapper {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    
+    &_control {
+      // display: flex;
+      // align-items: center;
+      // justify-content: end;
+    }
+
+    &_list {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+
+      @include mobile-landscape {
+        max-width: 500px;
       }
     }
   }

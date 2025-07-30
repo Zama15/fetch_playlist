@@ -1,13 +1,14 @@
 <script>
 import { fetchPlaylistMetadataById } from "@/services/fetcherApiService";
 import Author from "@/components/sidekicks/AuthorSmall.vue";
+import PlaylistVideos from "@/components/PlaylistVideos.vue";
 import LoadingBlock from "@/components/shared/LoadingBlock.vue";
 
 export default {
-  inject: ["formatDate", "trimText"],
   components: {
-    Author,
     LoadingBlock,
+    Author,
+    PlaylistVideos,
   },
   data: function () {
     return {
@@ -51,7 +52,7 @@ export default {
     <h1
       class="playlist-hero_title px-3 text-break w-100 text-center d-flex justify-content-center"
     >
-      <LoadingBlock v-if="loading" />
+      <LoadingBlock v-if="loading" extraClass="mt-2" />
       <template v-else>{{ playlist.title }}</template>
     </h1>
     <div class="playlist-hero_info">
@@ -63,14 +64,19 @@ export default {
         <LoadingBlock v-if="loading" />
         <template v-else> {{ playlist.id }} </template>
       </small>
-      <p class="d-flex justify-content-center text-break text-center p-2 m-0">
+      <p class="playlist-hero_info_description text-break text-center p-2 m-0">
         <LoadingBlock v-if="loading" />
-        <template v-else>
-          {{ this.trimText(playlist.description, 0, 100, "...") }}
-        </template>
+        <span v-else class="d-inline-block text-truncate">
+          {{ playlist.description }}
+        </span>
       </p>
     </div>
   </div>
 
   <Author v-if="!loading" :id="playlist?.channel_id" />
+  <PlaylistVideos
+    v-if="!loading"
+    :id="playlist?.id"
+    :playlistCount="playlist?.playlist_count"
+  />
 </template>

@@ -7,7 +7,6 @@ export default {
   provide() {
     return {
       formatDate: this.formatDate,
-      trimText: this.trimText,
     };
   },
   methods: {
@@ -17,15 +16,6 @@ export default {
         month: "long",
         day: "numeric",
       });
-    },
-    trimText: function (string, start, width, trim_maker = "") {
-      width -= trim_maker.length;
-
-      if (string.length > width) {
-        return string.substring(start, width) + trim_maker;
-      } else {
-        return string;
-      }
     },
   },
 };

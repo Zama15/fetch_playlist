@@ -20,6 +20,7 @@ def extract_author_thumbnails(thumbnails: list[dict]) -> dict:
   
   for thumb in thumbnails:
     tid = thumb.get("id", "")
+    tp = thumb.get("preference", -100)
     width = thumb.get("width", 0)
     height = thumb.get("height", 0)
 
@@ -28,7 +29,7 @@ def extract_author_thumbnails(thumbnails: list[dict]) -> dict:
         avatar = thumb
 
     if "banner" in tid.lower() or (width > height and width > 1000):
-      if not banner or (width > banner.get("width", 0)):
+      if not banner or (tp > banner.get("preference", -100)):
         banner = thumb
       
   return {

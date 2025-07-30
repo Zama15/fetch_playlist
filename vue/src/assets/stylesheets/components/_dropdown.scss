@@ -1,0 +1,50 @@
+.cdropdown {
+  position: relative;
+  user-select: none;
+  width: auto;
+
+  label {
+    color: var(--color-text);
+  }
+
+  &-box {
+    cursor: pointer;
+    flex-direction: row;
+
+    &_selected {
+      padding: 8px 10px;
+      color: var(--color-text);
+      width: calc(100% - 50px);
+    }
+
+    &_icon {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+      width: 50px;
+    }
+
+    &_options {
+      background-color: var(--color-background);
+      margin-top: 4px;
+      padding: 0;
+      position: absolute;
+      width: 100%;
+      top: 100%;
+
+      & li {
+        padding: 8px 10px;
+        cursor: pointer;
+        list-style: none;
+
+        &:hover {
+          background-color: var(--color-background-mute);
+        }
+
+        &.selected {
+          background-color: var(--color-background-soft);
+        }
+      }
+    }
+  }
+}

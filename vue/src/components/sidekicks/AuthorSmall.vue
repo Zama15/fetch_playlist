@@ -6,7 +6,6 @@ export default {
   props: {
     id: String,
   },
-  inject: ["formatDate"],
   components: {
     LoadingBlock,
   },
@@ -43,7 +42,7 @@ export default {
 
 <template>
   <div
-    class="playlist-author row card py-3 flex-row mx-3"
+    class="playlist-author row card py-3 flex-row"
     :style="loading ? {} : { backgroundImage: `url(${author.banner.url})` }"
   >
     <div class="playlist-author_overlay rounded" v-if="!loading"></div>
