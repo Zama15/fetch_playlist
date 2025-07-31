@@ -1,0 +1,46 @@
+@use "../../abstracts" as *;
+
+.playlist-wrapper {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+
+  &_control {
+    // display: flex;
+    // align-items: center;
+    // justify-content: end;
+  }
+
+  &_list {
+    display: grid;
+    max-width: 315px;
+    margin: auto;
+
+    @include mobile-landscape {
+      max-width: 500px;
+    }
+
+    &.compact {
+      gap: 0.1%;
+      grid-template-columns: repeat(3, calc(315px / 3));
+      width: 100%;
+
+      & .playlist-video {
+        height: calc(315px / 3);
+        width: calc(315px / 3);
+        padding: 0;
+
+        &_img > * {
+          display: flex;
+          background-position: center;
+          background-size: cover;
+          position: relative;
+          border-radius: 0;
+          width: calc(315px / 3);
+          height: calc(315px / 3);
+        }
+      }
+    }
+  }
+}

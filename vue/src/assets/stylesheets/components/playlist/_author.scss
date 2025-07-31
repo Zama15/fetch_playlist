@@ -1,0 +1,61 @@
+@use "../../abstracts" as *;
+
+.playlist-author {
+  background-color: var(--color-background-mute);
+  background-position: center;
+  background-size: cover;
+  position: relative;
+  margin: 0 8px;
+
+  @include mobile-landscape {
+    max-width: 450px;
+    margin: 0 auto;
+  }
+
+  & > *:not(&_overlay) {
+    z-index: 0;
+  }
+
+  &_overlay {
+    background-color: var(--color-overlay);
+    filter: brightness(0.6) contrast(1.2);
+    height: 98%;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    width:  98%;
+  }
+
+  &_img > * {
+    border-radius: 50%;
+    height: 60px;
+    width: 60px;
+  }
+
+  &_title {
+    color: var(--color-heading);
+
+    .substitute {
+      border-radius: 5px;
+      height: 31px;
+      width: 50%;
+    }
+  }
+
+  &_info {
+    p {
+      color: var(--color-heading);
+    }
+
+    small {
+      color: var(--color-text);
+    }
+
+    .substitute {
+      border-radius: 5px;
+      height: 21px;
+      width: 80%;
+    }
+  }
+}

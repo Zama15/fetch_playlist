@@ -1,11 +1,4 @@
-@import 'abstracts/mixins';
-@import 'abstracts/variables';
-
-@import 'base/reset';
-
-@import 'components/playlist';
-@import 'components/substitutes';
-@import 'components/dropdown';
-
-@import 'theme/dark';
-
+@use 'abstracts';
+@use 'base';
+@use 'components';
+@use 'theme';

@@ -1,3 +1,5 @@
+@use "../abstracts" as *;
+
 @include theme(dark) {
   :root {
     --color-background: #{$vt-c-black};
