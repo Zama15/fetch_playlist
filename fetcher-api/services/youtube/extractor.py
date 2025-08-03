@@ -71,7 +71,11 @@ def get_limited_playlist_items(
     limit: int = 10
   ) -> Tuple[Dict[str, Any], bool]:
   url = f"https://www.youtube.com/playlist?list={playlist_id}"
-  options = _default_ydl_opts({ "playlist_items": f"{offset}-{limit}" })
+
+  start_index = offset
+  end_index = offset + limit - 1
+
+  options = _default_ydl_opts({ "playlist_items": f"{start_index}-{end_index}" })
 
   try:
     with YoutubeDL(options) as ydl:
@@ -80,7 +84,10 @@ def get_limited_playlist_items(
       if (metadata is None):
         return ({ "error": "Playlist could not be retrieved" }, False)      
 
-      filtered = [_filter_metadata(item, VideoTargetKeys) for item in metadata.get("entries", [])]
+      filtered = [
+        _filter_metadata(item, VideoTargetKeys) if item is not None else None
+        for item in metadata.get("entries", [])
+      ]
       sanitized = ydl.sanitize_info({ "items": filtered })
 
       return sanitized, True

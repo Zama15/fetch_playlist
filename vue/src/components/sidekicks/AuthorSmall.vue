@@ -37,38 +37,38 @@ export default {
       this.loading = false;
     },
   },
+  computed: {
+    banner() {
+      return this.author && this.author.banner.url
+        ? `url(${this.author.banner.url})`
+        : false;
+    },
+  },
 };
 </script>
 
 <template>
-  <div
-    class="playlist-author row card py-3 flex-row"
-    :style="loading ? {} : { backgroundImage: `url(${author.banner.url})` }"
-  >
+  <div class="playlist-author card py-3" :style="{ backgroundImage: banner }">
     <div class="playlist-author_overlay rounded" v-if="!loading"></div>
-    <div
-      class="playlist-author_img flex-row d-flex justify-content-center pb-2"
-    >
+    <div class="playlist-author_img d-flex justify-content-center pb-2">
       <LoadingBlock v-if="loading" />
       <img v-else :src="author.avatar.url" :alt="author.channel" />
     </div>
 
-    <h2
-      class="playlist-author_title d-flex align-items-center justify-content-center"
-    >
+    <h2 class="playlist-author_title">
       <LoadingBlock v-if="loading" />
-      <span v-else>{{ author.channel }}</span>
+      <span v-else>{{ author.channel || "" }}</span>
     </h2>
 
     <div class="playlist-author_info">
       <p class="d-flex align-items-center justify-content-center m-0">
         <LoadingBlock v-if="loading" extraClass="mb-2" />
-        <small v-else class="pe-2">{{ author.uploader_id }}</small>
+        <small v-else class="pe-2">{{ author.uploader_id || "" }}</small>
       </p>
 
       <small class="d-flex align-items-center justify-content-center">
         <LoadingBlock v-if="loading" />
-        <span v-else>{{ author.id }}</span>
+        <span v-else>{{ author.id || "" }}</span>
       </small>
     </div>
   </div>

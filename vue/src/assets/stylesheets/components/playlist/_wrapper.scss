@@ -1,45 +1,72 @@
 @use "../../abstracts" as *;
 
+$wrapper-width: 315px;
+$wrapper-width-lg: 500px;
+
+$cols: 3;
+$cols-lg: 5;
+
+$border: 1px;
+$gap: $border;
+
+$total-gap: ($cols - 1) * $gap;
+$total-gap-lg: ($cols-lg - 1) * $gap;
+
+$wrapper-v-c-size: calc(($wrapper-width - $total-gap) / $cols);
+$wrapper-v-c-size-lg: calc(($wrapper-width-lg - $total-gap-lg) / $cols-lg);
+
 .playlist-wrapper {
-  align-items: center;
   display: flex;
+  align-items: center;
   flex-direction: column;
   width: 100%;
 
-  &_control {
-    // display: flex;
-    // align-items: center;
-    // justify-content: end;
-  }
-
   &_list {
-    display: grid;
-    max-width: 315px;
-    margin: auto;
+    width: 100%;
+    max-width: $wrapper-width;
+    display: flex;
+    flex-direction: column;
 
     @include mobile-landscape {
-      max-width: 500px;
+      max-width: $wrapper-width-lg;
     }
 
-    &.compact {
-      gap: 0.1%;
-      grid-template-columns: repeat(3, calc(315px / 3));
+    &_compact {
       width: 100%;
+      
+      border-top: $border solid var(--color-border);
+      border-left: $border solid var(--color-border);
+      
+      display: grid;
+      gap: $gap;
+      grid-template-columns:repeat($cols, $wrapper-v-c-size);
 
-      & .playlist-video {
-        height: calc(315px / 3);
-        width: calc(315px / 3);
-        padding: 0;
+      @include mobile-landscape {
+        grid-template-columns: repeat($cols-lg, $wrapper-v-c-size-lg);
+      }
+    }
+  }
 
-        &_img > * {
-          display: flex;
-          background-position: center;
-          background-size: cover;
-          position: relative;
-          border-radius: 0;
-          width: calc(315px / 3);
-          height: calc(315px / 3);
-        }
+  &_control {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+
+    @include mobile-landscape {
+      max-width: $wrapper-width-lg;
+    }
+
+    & .btn {
+      background-color: var(--color-background);
+      border: $border solid var(--color-border);
+      color: var(--color-text);
+
+      &.active {
+        background-color: var(--color-background-mute);
+      }
+
+      &:hover:not(&.active) {
+        background-color: var(--color-background-soft);
       }
     }
   }

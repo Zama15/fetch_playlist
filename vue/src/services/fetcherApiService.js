@@ -25,7 +25,7 @@ export async function fetchLimitedPlaylistItemsById(
   offset = 0,
   limit = 10
 ) {
-  const queryParams = new URLSearchParams({ id, offset, limit }).toString();
+  const queryParams = new URLSearchParams({ offset, limit }).toString();
   const response = await fetch(`${API}/playlist/${id}?${queryParams}`);
 
   return normalizeResponse(response);
