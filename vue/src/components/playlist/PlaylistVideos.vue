@@ -1,6 +1,6 @@
 <script>
-import VideoDetail from "@/components/sidekicks/VideoDetail.vue";
-import VideoCompact from "@/components/sidekicks/VideoCompact.vue";
+import VideoDetail from "@/components/playlist/VideoDetail.vue";
+import VideoCompact from "@/components/playlist/VideoCompact.vue";
 import { fetchLimitedPlaylistItemsById } from "@/services/fetcherApiService";
 
 export default {

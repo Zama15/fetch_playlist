@@ -1,7 +1,7 @@
 <script>
 import { fetchPlaylistMetadataById } from "@/services/fetcherApiService";
-import Author from "@/components/sidekicks/AuthorSmall.vue";
-import PlaylistVideos from "@/components/PlaylistVideos.vue";
+import Author from "@/components/playlist/AuthorSmall.vue";
+import PlaylistVideos from "@/components/playlist/PlaylistVideos.vue";
 import LoadingBlock from "@/components/shared/LoadingBlock.vue";
 
 export default {
