@@ -22,7 +22,5 @@ export default {
 </script>
 
 <style>
-@import url("https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css");
-@import url("https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css");
 @import "./assets/stylesheets/main.css";
 </style>

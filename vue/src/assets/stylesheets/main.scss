@@ -1,3 +1,8 @@
+@use "../../../node_modules/bootstrap/scss/bootstrap.scss";
+
+// $bootstrap-icons-font-dir: "../../../node_modules/bootstrap-icons/font/fonts";
+@use "../../../node_modules/bootstrap-icons/font/bootstrap-icons.scss";
+
 @use 'abstracts';
 @use 'base';
 @use 'components';
