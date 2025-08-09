@@ -2,12 +2,6 @@ import { normalizeResponse } from "@/services/helpers";
 
 const API = import.meta.env.VITE_FETCHER_API;
 
-export async function fetchPlaylistsByAuthor(channelId) {
-  const response = await fetch(`${API}/author/${channelId}`);
-
-  return normalizeResponse(response);
-}
-
 export async function fetchPlaylistMetadataById(id) {
   const response = await fetch(`${API}/meta/playlist/${id}`);
 
@@ -27,6 +21,17 @@ export async function fetchLimitedPlaylistItemsById(
 ) {
   const queryParams = new URLSearchParams({ offset, limit }).toString();
   const response = await fetch(`${API}/playlist/${id}?${queryParams}`);
+
+  return normalizeResponse(response);
+}
+
+export async function fetchLimitedPlaylistsByAuthorId(
+  id,
+  offset = 0,
+  limit = 10
+) {
+  const queryParams = new URLSearchParams({ offset, limit }).toString();
+  const response = await fetch(`${API}/author/${id}?${queryParams}`);
 
   return normalizeResponse(response);
 }

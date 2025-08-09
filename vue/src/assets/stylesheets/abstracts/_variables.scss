@@ -50,3 +50,11 @@ $vt-c-overlay-dark: rgba(24, 24, 24, 0.596);
 
   --color-overlay: #{$vt-c-overlay-light};
 }
+
+// z indexes
+$z-base: 0;
+
+// Overlays and floating components
+$z-overlay-thumbnail: 20;       // Overlays on thumbnails (videos/playlists/avatars)
+$z-profile-banner: 30;          // Profile banner
+$z-profile-avatar-floating: 40; // Floating avatar

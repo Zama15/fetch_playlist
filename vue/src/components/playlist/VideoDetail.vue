@@ -39,8 +39,12 @@ export default {
 
 <template>
   <div class="playlist-video">
-    <div :style="{ backgroundImage: thumbnail }" class="playlist-video_img">
+    <div
+      :style="{ backgroundImage: thumbnail }"
+      class="playlist-video_img thumbnail"
+    >
       <LoadingBlock v-if="!thumbnail" />
+      <div v-else class="thumbnail--overlay play"></div>
     </div>
     <div :class="['playlist-video_details', { active: !video }]">
       <div class="playlist-video_title">

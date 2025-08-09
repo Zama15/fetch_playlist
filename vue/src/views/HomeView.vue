@@ -1,14 +1,14 @@
 <script>
 import {
   fetchPlaylistMetadataById,
-  fetchPlaylistsByAuthor,
+  fetchAuthorMetadataById,
 } from "@/services/fetcherApiService";
 
 export default {
   data: function () {
     return {
       playlistId: "",
-      channelId: "",
+      authorId: "",
       error: false,
       errorMessage: "",
     };
@@ -36,10 +36,14 @@ export default {
 
       this.$router.push(`/playlist/${this.playlistId}`);
     },
-    getChannelPlaylists: async function (e) {
+    getAuthorPlaylists: async function (e) {
       e.preventDefault();
 
-      if (this.channelId.length < 24 && this.channelId !== "") {
+      if (
+        this.authorId.length < 24 &&
+        this.authorId !== "" &&
+        !this.authorId.includes("@")
+      ) {
         this.error = true;
         this.errorMessage =
           "The length of the id is too short(24 characters required)";
@@ -47,16 +51,23 @@ export default {
         return;
       }
 
-      const res = await fetchPlaylistsByAuthor(this.channelId);
+      const res = await fetchAuthorMetadataById(this.authorId);
 
       if (!res.ok) {
         this.error = true;
-        this.errorMessage =
-          res.message || "No playlists found with the given channel id";
+        this.errorMessage = res.message || "No author found with the given id";
         return;
       }
 
-      this.$router.push(`/playlist/${this.playlistId}`);
+      const author = res.data;
+
+      if (!author || !author.uploader_id) {
+        this.error = true;
+        this.errorMessage = "Author found, but unable to proceed further.";
+        return;
+      }
+
+      this.$router.push(`/author/${author.uploader_id}`);
     },
     dismissError: function () {
       this.error = false;
@@ -106,20 +117,20 @@ export default {
 
         <div class="mb-3 form-group justify-content-center d-flex row">
           <label for="playlist-author-id" class="form-label fs-5 w-100 p-0">
-            By channel id
+            By author id
           </label>
           <input
             type="text"
             name="playlist-author-id"
             id="playlist-author-id"
             class="form-control"
-            v-model="channelId"
+            v-model="authorId"
           />
 
           <button
             class="btn btn-primary mt-3 w-50 playlist"
-            v-if="channelId"
-            @click="getChannelPlaylists"
+            v-if="authorId"
+            @click="getAuthorPlaylists"
           >
             Get Playlists
           </button>

@@ -1,0 +1,23 @@
+.copy-block {
+
+  &_wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  &_icon, &_icon > * {
+    color: var(--color-text);
+    cursor: pointer;
+
+    &:hover {
+      color: var(--color-heading);
+    }
+  }
+
+  &_text {
+    display: inline-block;
+    padding-right: 4px;
+    max-width: 90%;
+  }
+}

@@ -36,11 +36,21 @@ export default {
       this.author = res.data;
       this.loading = false;
     },
+    toAuthor: function () {
+      if (!this.author?.uploader_id) return;
+
+      this.$router.push(`/author/${this.author.uploader_id}`);
+    },
   },
   computed: {
     banner() {
       return this.author && this.author.banner.url
         ? `url(${this.author.banner.url})`
+        : false;
+    },
+    avatar() {
+      return this.author && this.author.avatar.url
+        ? `url(${this.author.avatar.url})`
         : false;
     },
   },
@@ -50,9 +60,14 @@ export default {
 <template>
   <div class="playlist-author card py-3" :style="{ backgroundImage: banner }">
     <div class="playlist-author_overlay rounded" v-if="!loading"></div>
-    <div class="playlist-author_img d-flex justify-content-center pb-2">
-      <LoadingBlock v-if="loading" />
-      <img v-else :src="author.avatar.url" :alt="author.channel" />
+    <div class="d-flex justify-content-center pb-2">
+      <div
+        class="playlist-author_img thumbnail"
+        :style="{ backgroundImage: avatar }"
+      >
+        <LoadingBlock v-if="loading" />
+        <div v-else @click="toAuthor" class="thumbnail--overlay link"></div>
+      </div>
     </div>
 
     <h2 class="playlist-author_title">

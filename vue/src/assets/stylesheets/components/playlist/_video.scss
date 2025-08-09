@@ -34,18 +34,15 @@ $pv-img-play-c-pos: calc($pv-img-c / 2) - calc($pv-img-play-i-size / 2);
 $pv-img-play-c-pos-lg: calc($pv-img-c-lg / 2) - calc($pv-img-play-i-size-lg / 2);
 
 .playlist-video {
+  position: relative;
   display: flex;
   flex-direction: row;
   width: 100%;
   padding: 4px;
   border-radius: 5px;
 
-  &:hover {
-    background-color: var(--color-background-soft);
-  }
-
   &_img {
-    z-index: 1;
+    position: relative;
     background-color: var(--color-background-mute);
     background-position: center;
     background-size: cover;
@@ -78,11 +75,10 @@ $pv-img-play-c-pos-lg: calc($pv-img-c-lg / 2) - calc($pv-img-play-i-size-lg / 2)
     color: var(--color-heading);
 
     h3 {
-      max-width: $pv-title-width;
+      max-width: 100%;
 
       @include mobile-landscape {
         font-size: $pv-title-fontsize-lg;
-        max-width: $pv-title-width-lg;
       }
     }
 
@@ -151,28 +147,17 @@ $pv-img-play-c-pos-lg: calc($pv-img-c-lg / 2) - calc($pv-img-play-i-size-lg / 2)
     }
   }
 
-  .playlist-wrapper_list & {
-    border-bottom: w.$border solid var(--color-border);
-
-    &:last-child {
-      border-bottom: none;
-    }
-  }
-
   .playlist-wrapper_list_compact & {
-    padding: 0;
     height: w.$wrapper-v-c-size;
     width: w.$wrapper-v-c-size;
+    padding: 0;
+    border-radius: 0;
     border-right: w.$border solid var(--color-border);
     border-bottom: w.$border solid var(--color-border);
 
     @include mobile-landscape {
       height: w.$wrapper-v-c-size-lg;
       width: w.$wrapper-v-c-size-lg;
-    }
-
-    &:last-child {
-      border-bottom: w.$border solid var(--color-border);
     }
 
     &_img {
@@ -200,9 +185,9 @@ $pv-img-play-c-pos-lg: calc($pv-img-c-lg / 2) - calc($pv-img-play-i-size-lg / 2)
 
     &_details {
       position: absolute;
+      z-index: calc($z-overlay-thumbnail + 1);
       padding: 0;
       opacity: 0;
-      z-index: 1;
 
       width: $pv-img-c;
       height: $pv-img-c;
@@ -211,15 +196,11 @@ $pv-img-play-c-pos-lg: calc($pv-img-c-lg / 2) - calc($pv-img-play-i-size-lg / 2)
         height: $pv-img-c-lg;
         width: $pv-img-c-lg;
       }
+    }
 
-      &:hover {
-        opacity: 1;
-        background: linear-gradient(var(--color-background), transparent, var(--color-background));
-      }
-
-      &.active {
-        opacity: 1;
-      }
+    &:hover .playlist-video_details,
+    &:focus-within .playlist-video_details {
+      opacity: 1;
     }
 
     &_title {

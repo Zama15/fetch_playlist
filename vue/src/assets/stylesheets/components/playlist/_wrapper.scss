@@ -31,6 +31,14 @@ $wrapper-v-c-size-lg: calc(($wrapper-width-lg - $total-gap-lg) / $cols-lg);
       max-width: $wrapper-width-lg;
     }
 
+    & .playlist-video {
+      border-bottom: $border solid var(--color-border);
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
     &_compact {
       width: 100%;
       
@@ -43,6 +51,10 @@ $wrapper-v-c-size-lg: calc(($wrapper-width-lg - $total-gap-lg) / $cols-lg);
 
       @include mobile-landscape {
         grid-template-columns: repeat($cols-lg, $wrapper-v-c-size-lg);
+      }
+
+      & .playlist-video:last-child {
+        border-bottom: $border solid var(--color-border);
       }
     }
   }

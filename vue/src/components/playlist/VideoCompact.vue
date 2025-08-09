@@ -38,11 +38,14 @@ export default {
 </script>
 
 <template>
-  <div class="playlist-video">
+  <div class="playlist-video thumbnail">
+    <div v-if="thumbnail" class="thumbnail--overlay play"></div>
     <div :style="{ backgroundImage: thumbnail }" class="playlist-video_img">
       <LoadingBlock v-if="!thumbnail" />
     </div>
+    <!-- <div :class="['playlist-video_details', 'thumbnail', { active: !video }]"> -->
     <div :class="['playlist-video_details', { active: !video }]">
+      <!-- <div v-if="thumbnail" class="thumbnail--overlay play"></div> -->
       <div class="playlist-video_title">
         <LoadingBlock v-if="!video" extraClass="mb-1" />
         <h3 v-else class="h6 mb-1 d-inline-block text-truncate">

@@ -1,10 +1,15 @@
 @use "../../abstracts" as *;
 
+$p-a-z: $z-base;
+$p-a-z-overlay: calc($z-base + 1);
+$p-a-z-content: calc($z-base + 2);
+
 .playlist-author {
+  position: relative;
+  z-index: $p-a-z;
   background-color: var(--color-background-mute);
   background-position: center;
   background-size: cover;
-  position: relative;
   margin: 0 8px;
 
   @include mobile-landscape {
@@ -12,28 +17,35 @@
     margin: 0 auto;
   }
 
-  & > *:not(&_overlay) {
-    z-index: 0;
-  }
-
   &_overlay {
-    background-color: var(--color-overlay);
-    filter: brightness(0.6) contrast(1.2);
-    height: 98%;
-    left: 50%;
     position: absolute;
+    z-index: $p-a-z-overlay;
+    height: 98%;
+    width:  98%;
+    left: 50%;
     top: 50%;
     transform: translate(-50%,-50%);
-    width:  98%;
+    background-color: var(--color-overlay);
+    filter: brightness(0.6) contrast(1.2);
   }
 
-  &_img > * {
-    border-radius: 50%;
-    height: 60px;
-    width: 60px;
+  &_img {
+    position: relative;
+    z-index: $p-a-z-content;
+    background-color: var(--color-background-mute);
+    background-position: center;
+    background-size: cover;
+
+    & , .substitute {
+      border-radius: 50%;
+      height: 60px;
+      width: 60px;
+    }
   }
 
   &_title {
+    position: relative;
+    z-index: $p-a-z-content;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -47,6 +59,9 @@
   }
 
   &_info {
+    position: relative;
+    z-index: $p-a-z-content;
+
     p {
       color: var(--color-heading);
     }

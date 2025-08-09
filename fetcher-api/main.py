@@ -52,3 +52,14 @@ def read_item(
   if not ok:
     raise HTTPException(status_code=404, detail=result)
   return result
+
+@app.get("/author/{uploader_id}")
+def read_item(
+  uploader_id: str,
+  offset: int = 0,
+  limit: int = 5,
+):
+  result, ok = extractor.get_limited_author_playlists(uploader_id, offset, limit)
+  if not ok:
+    raise HTTPException(status_code=404, detail=result)
+  return result

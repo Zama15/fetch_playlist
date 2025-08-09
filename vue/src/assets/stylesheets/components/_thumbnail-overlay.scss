@@ -1,0 +1,48 @@
+@use "../abstracts" as *;
+
+.thumbnail {
+  &--overlay {
+    position: absolute;
+    z-index: $z-overlay-thumbnail;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-text);
+    background-color: var(--color-overlay);
+    border-radius: inherit;
+    cursor: pointer;
+    pointer-events: none;
+    opacity: 0;
+    font-size: 32px;
+    transition: opacity 0.25s ease;
+
+    &::before {
+      font-family: "bootstrap-icons";
+      transform: scale(0.85);
+      transition: transform 0.25s ease;
+    }
+
+    &.link::before {
+      content: "\f471";
+    }
+
+    &.play::before {
+      content: "\f4f4";
+    }
+
+    &.lg {
+      font-size: 64px;
+    }
+  }
+
+  &:hover &--overlay,
+  &:focus-within &--overlay {
+    opacity: 1;
+    pointer-events: auto;
+
+    &__icon {
+      transform: scale(1);
+    }
+  }
+}
