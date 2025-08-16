@@ -23,9 +23,9 @@ const router = createRouter({
       component: AuthorView,
     },
     // {
-    //   path: '/item/:id',
-    //   name: 'item',
-    //   component: PlayListItemView
+    //   path: '/player/:id',
+    //   name: 'player',
+    //   component: player
     // },
   ],
 });

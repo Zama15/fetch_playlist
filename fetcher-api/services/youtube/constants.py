@@ -1,4 +1,9 @@
 from enum import Enum
+from os import getenv, path
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path=path.join(path.dirname(path.dirname(path.dirname(__file__))), ".env"))
+DOWNLOAD_PATH = getenv("DOWNLOAD_PATH") or "downloads"
 
 class VideoTargetKeys(str, Enum):
   ID = "id"
