@@ -71,27 +71,6 @@ def save_download_playlist_meta(playlist_id: str, meta: Dict[str, Any]):
   meta_path = playlist_meta_path(playlist_id)
   save_json(meta_path, meta)
 
-# class YDLLogger:
-#   def __init__(self):
-#     self.errors = {}
-#     self.current_video_id = None
-
-#   def debug(self, msg): pass
-
-#   def warning(self, msg):
-#     print("YDLLogger [warning] msg: ", msg)
-#     print("YDLLogger [warning] errors:", self.errors)
-#     print("YDLLogger [warning] video id:", self.current_video_id)
-#     if self.current_video_id:
-#       self.errors[self.current_video_id] = msg
-
-#   def error(self, msg):
-#     print("YDLLogger [error] msg: ", msg)
-#     print("YDLLogger [error] errors:", self.errors)
-#     print("YDLLogger [error] video id:", self.current_video_id)
-#     if (self.current_video_id):
-#       self.error[self.current_video_id] = msg
-
 class YDLLogger:
   _id_pattern = compile(r"\[youtube\]\s+([A-Za-z0-9_-]{11})")
 

@@ -1,5 +1,8 @@
 <script>
-import { fetchLimitedPlaylistsByAuthorId } from "@/services/fetcherApiService";
+import {
+  fetchAuthorMetadataById,
+  fetchLimitedPlaylistsByAuthorId,
+} from "@/services/fetcherApiService";
 import ProfileSide from "@/components/author/ProfileSide.vue";
 import ProfileTop from "@/components/author/ProfileTop.vue";
 import PlaylistCard from "@/components/author/PlaylistCard.vue";
@@ -15,7 +18,10 @@ export default {
   data: function () {
     return {
       author: null,
-      loading: true,
+      playlists: null,
+
+      loadingAuthor: true,
+      loadingPlaylists: true,
 
       error: false,
       errorMessage: "",
@@ -23,11 +29,12 @@ export default {
   },
   async created() {
     const authorId = this.$route.params.authorId;
-    this.fetchAuthor(authorId);
+    this.fetchAuthorMetadata(authorId);
+    this.fetchAuthorPlaylists(authorId);
   },
   methods: {
-    fetchAuthor: async function (authorId) {
-      const res = await fetchLimitedPlaylistsByAuthorId(authorId);
+    fetchAuthorMetadata: async function (authorId) {
+      const res = await fetchAuthorMetadataById(authorId);
 
       if (!res.ok) {
         this.error = true;
@@ -36,7 +43,20 @@ export default {
       }
 
       this.author = res.data;
-      this.loading = false;
+      this.loadingAuthor = false;
+    },
+    fetchAuthorPlaylists: async function (authorId) {
+      const res = await fetchLimitedPlaylistsByAuthorId(authorId);
+
+      if (!res.ok) {
+        this.error = true;
+        this.errorMessage =
+          res.message || "Unable to retrieve author playlists";
+        return;
+      }
+
+      this.playlists = res.data.items;
+      this.loadingPlaylists = false;
     },
   },
 };
@@ -50,8 +70,8 @@ export default {
 
     <div class="author-playlist_grid">
       <PlaylistCard
-        v-if="!loading"
-        v-for="(item, index) in author?.entries"
+        v-if="!loadingPlaylists"
+        v-for="(item, index) in playlists"
         :key="index"
         :playlist="item"
       />

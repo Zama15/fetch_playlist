@@ -45,13 +45,13 @@ export default {
     ></div>
     <div class="author-profile--side_overlay" v-if="author"></div>
     <div class="author-profile--side_stats py-2 pe-2">
-      <LoadingBlock v-if="!author" />
+      <!-- <LoadingBlock v-if="!author" />
       <div v-else class="author-profile--side_stats_playlist">
         <i class="bi bi-collection-play"></i>
         <h2>
           {{ author.playlist_count || 0 }}
         </h2>
-      </div>
+      </div> -->
 
       <LoadingBlock v-if="!author" />
       <div class="author-profile--side_stats_followers" v-else>

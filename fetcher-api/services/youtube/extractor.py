@@ -106,7 +106,6 @@ def get_limited_playlist_items(
 
   options = _default_ydl_opts({
     "playlist_items": f"{start_index}-{end_index}",
-    "extract_flat": True
   })
 
   try:
@@ -148,13 +147,11 @@ def get_limited_author_playlists(
       if (metadata is None):
         return ({ "error": "Author playlists could not be retrieved" }, False)
 
-      sanitized = ydl.sanitize_info(metadata)
-
-      thumbnails_info = extract_author_thumbnails(sanitized.get("thumbnails", []))
-      sanitized.update({
-        "avatar": thumbnails_info.get("avatar"),
-        "banner": thumbnails_info.get("banner")
-      })
+      filtered = [
+        _filter_metadata(item, PlaylistTargetKeys) if item is not None else None
+        for item in metadata.get("entries", [])
+      ]
+      sanitized = ydl.sanitize_info({ "items": filtered })
 
       return sanitized, True
   except Exception as e:
