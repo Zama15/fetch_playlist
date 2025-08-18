@@ -13,7 +13,7 @@ class TaskManager:
     
     with self.lock:
       self.tasks[task_id] = {
-        "status": "pending",
+        "status": "pending", # pending, running, running:STEP, done, error, cancelled
         "current_step": None,
         "progress": 0.0,
         "cancelled": False,
@@ -65,7 +65,7 @@ class TaskManager:
     with self.lock:
       if task_id in self.tasks:
         self.tasks[task_id]["cancelled"] = True
-        self.tasks[task_id]["status"] = "cancelling"
+        self.tasks[task_id]["status"] = "cancelled"
 
         return True
 

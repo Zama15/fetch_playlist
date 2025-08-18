@@ -32,17 +32,17 @@ def _default_ydl_opts(overrides: dict = None) -> dict:
   return base_opts
 
 def _ydl_progress_hook(
-    task_manager: TaskManager,
-    task_id: str,
-    data: Dict[str, Any]
-  ):
+  task_manager: TaskManager,
+  task_id: str,
+  data: Dict[str, Any]
+):
   if task_manager.is_cancelled(task_id):
+    log(f"[{task_id}] _ydl_progress_hook: cancel was detected")
     raise Exception("Cancelled by user")
 
   if data.get("status") == "downloading":
     total = data.get("total_bytes") or data.get("total_bytes_estimate") or 1
     downloaded = data.get("downloaded_bytes", 0)
-    task_manager.start_step(task_id, f"downloading {data.get("filename", "")}")
     task_manager.update_progress(task_id, downloaded / total)
 
 def _filter_metadata(metadata: dict, keys_enum: Enum) -> dict:
@@ -187,6 +187,21 @@ def _download_videos(
     "playlist_items": ",".join(str(i) for i in indexes),
     "logger": logger,
     "progress_hooks": [lambda d: _ydl_progress_hook(task_manager, task_id, d)],
+
+    "embedthumbnail": True,
+    "addmetadata": True,
+    "postprocessors": [
+      {
+        "key": "FFmpegExtractAudio",
+        "preferredcodec": "mp3",
+        "preferredquality": "192",
+      },
+      # ensure metadata written (yt-dlp's Metadata postprocessor)
+      {"key": "FFmpegMetadata"},
+    ],
+    # pass ffmpeg args (e.g. force id3 v2.3 for compatibility)
+    # can be list or dict depending on yt-dlp version; fallback to general list:
+    # "postprocessor_args": ["-id3v2_version", "3"],
   })
 
   url = f"https://www.youtube.com/playlist?list={playlist_id}"
@@ -218,7 +233,6 @@ def _download_videos(
               "index": idx,
               "file": f"{vid_id}.{entry.get("ext")}"
             }
-            logger.current_video_id = None
         
     return downloaded_indexes, missing_indexes
   
@@ -345,3 +359,8 @@ def download_limited_playlist_items(
     log(f"[{task_id}] download_limited_playlist_items: finished (task left in manager for inspection)")
     # DO NOT delete the task here during debug — keep it for inspection.
     # task_manager.delete(task_id)  # remove only when you want to forget the task
+
+    try:
+      save_download_playlist_meta(playlist_id, {**meta, "downloaded_indexes": sorted(downloaded_set)})
+    except Exception as ex:
+      log(f"[{task_id}] failed to save meta in finally: {ex}")
