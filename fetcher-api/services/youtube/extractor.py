@@ -1,6 +1,7 @@
 from typing import Tuple, Dict, Any, List, Set
 from enum import Enum
 from yt_dlp import YoutubeDL
+from os.path import basename
 from .constants import (
   DOWNLOAD_PATH,
   PlaylistTargetKeys,
@@ -13,6 +14,8 @@ from .utils import (
   extract_author_thumbnails,
   load_downloaded_playlist_meta,
   save_download_playlist_meta,
+  reconcile_disk_state,
+  rebuild_downloaded_indexes,
   YDLLogger
 )
 from utils.task_manager import TaskManager
@@ -34,16 +37,38 @@ def _default_ydl_opts(overrides: dict = None) -> dict:
 def _ydl_progress_hook(
   task_manager: TaskManager,
   task_id: str,
-  data: Dict[str, Any]
+  playlist_id: str,
+  meta: dict,
+  downloaded_set: Set[int],
+  data: Dict[str, Any],
 ):
   if task_manager.is_cancelled(task_id):
-    log(f"[{task_id}] _ydl_progress_hook: cancel was detected")
     raise Exception("Cancelled by user")
 
-  if data.get("status") == "downloading":
-    total = data.get("total_bytes") or data.get("total_bytes_estimate") or 1
+  status = data.get("status")
+  info = data.get("info_dict") or {}
+  vid_id = info.get("id")
+
+  if not vid_id:
+    return
+
+  v = meta["videos"].setdefault(vid_id, {"index": info.get("playlist_index")})
+
+  if status == "downloading":
+    v["status"] = "partial"
     downloaded = data.get("downloaded_bytes", 0)
+    total = data.get("total_bytes") or data.get("total_bytes_estimate") or 1
     task_manager.update_progress(task_id, downloaded / total)
+    save_download_playlist_meta(playlist_id, meta)
+  elif status == "finished":
+    v["status"] = "downloaded"
+    v["file"] = basename(data.get("filename", "")) or v.get("file")
+    idx = v.get("index")
+
+    if isinstance(idx, int):
+      downloaded_set.add(idx)
+
+    save_download_playlist_meta(playlist_id, meta)
 
 def _filter_metadata(metadata: dict, keys_enum: Enum) -> dict:
   return { key.value: metadata.get(key.value) for key in keys_enum }
@@ -164,7 +189,7 @@ def _download_videos(
   indexes: List[int],
   meta: Dict[str, Any],
   logger: YDLLogger,
-) -> Tuple[Set[int], Set[int]]:
+) -> Set[int]:
   """
   Downloads the given playlist indexes and returns (downloaded_indexes, failed_indexes)
   """
@@ -186,7 +211,7 @@ def _download_videos(
     "download_archive": f"{DOWNLOAD_PATH}/{playlist_id}/archive.txt",
     "playlist_items": ",".join(str(i) for i in indexes),
     "logger": logger,
-    "progress_hooks": [lambda d: _ydl_progress_hook(task_manager, task_id, d)],
+    "progress_hooks": [lambda d: _ydl_progress_hook(task_manager, task_id, playlist_id, meta, downloaded_indexes, d)],
 
     "embedthumbnail": True,
     "addmetadata": True,
@@ -196,12 +221,8 @@ def _download_videos(
         "preferredcodec": "mp3",
         "preferredquality": "192",
       },
-      # ensure metadata written (yt-dlp's Metadata postprocessor)
       {"key": "FFmpegMetadata"},
     ],
-    # pass ffmpeg args (e.g. force id3 v2.3 for compatibility)
-    # can be list or dict depending on yt-dlp version; fallback to general list:
-    # "postprocessor_args": ["-id3v2_version", "3"],
   })
 
   url = f"https://www.youtube.com/playlist?list={playlist_id}"
@@ -216,25 +237,13 @@ def _download_videos(
         raise Exception("Cancelled before starting download")
 
       try:
-        result = ydl.extract_info(url)
+        ydl.extract_info(url)
       except Exception as ex:
         log(f"[{task_id}] _download_videos: extract_info raised: {ex}")
         log_trace()
         raise
-
-      if result and "entries" in result:
-        for idx, entry in zip(indexes, result.get("entries")):
-          if entry:
-            vid_id = entry.get("id")
-            downloaded_indexes.add(idx)
-            missing_indexes.discard(idx)
-            meta["videos"][vid_id] = {
-              "title": entry.get("title"),
-              "index": idx,
-              "file": f"{vid_id}.{entry.get("ext")}"
-            }
         
-    return downloaded_indexes, missing_indexes
+    return missing_indexes - downloaded_indexes
   
   except Exception as e:
     log(f"[{task_id}] _download_videos: exception: {e}")
@@ -248,7 +257,7 @@ def _fetch_unavailable_metadata(
   indexes: Set[int],
   meta: Dict[str, Any],
   logger: YDLLogger,
-) -> int:
+):
   if not indexes:
     log(f"[{task_id}] _fetch_unavailable_metadata: no indexes, returning 0")
     return 0
@@ -257,38 +266,24 @@ def _fetch_unavailable_metadata(
     "extract_flat": True,
     "playlist_items": ",".join(str(i) for i in sorted(indexes)),
     "logger": logger,
-    "progress_hooks": [lambda d: _ydl_progress_hook(task_manager, task_id, d)],
+    "progress_hooks": [lambda d: _ydl_progress_hook(task_manager, task_id, playlist_id, meta, set(), d)],
   })
   
   url = f"https://www.youtube.com/playlist?list={playlist_id}"
 
-  unavailable_count = 0
   try:
     log(f"[{task_id}] _fetch_unavailable_metadata: starting for indexes={sorted(indexes)}")
     if task_manager.is_cancelled(task_id):
       raise Exception("Cancelled before starting fetch unavailable videos")
     
-    with YoutubeDL(opts) as ydl:  
+    with YoutubeDL(opts) as ydl:
       try:
-        result = ydl.extract_info(url)
+        ydl.extract_info(url)
       except Exception as ex:
         log(f"[{task_id}] _fetch_unavailable_metadata: extract_info raised: {ex}")
         log_trace()
         raise
 
-      if result and "entries" in result:
-        for idx, entry in zip(indexes, result.get("entries")):
-          if entry:
-            vid_id = entry.get("id")
-            error_msg = logger.errors.get(vid_id, "Video unavailable")
-            meta["videos"][vid_id] = {
-              "title": entry.get("title"),
-              "index": idx,
-              "error": error_msg
-            }
-            unavailable_count += 1
-
-    return unavailable_count
   except Exception as e:
     log(f"[{task_id}] _fetch_unavailable_metadata: exception: {e}")
     log_trace()
@@ -317,50 +312,49 @@ def download_limited_playlist_items(
     
     logger = YDLLogger()
 
-    # Step 1: Try to download the videos in pending indexes
     task_manager.start_step(task_id, "download")
-    dl_indexes, missing_indexes = _download_videos(
+    missing_indexes = _download_videos(
       task_manager, task_id, playlist_id, pending_indexes, meta, logger
     )
     task_manager.complete_step(task_id)
 
-    ## Step 1.a: Check download task status
-    dl_status = task_manager.get(task_id)["status"]
-    if task_manager.is_cancelled(task_id):
-      task_manager.update_result(task_id, "Cancelled during download")
-      return 
-
-    ## Step 1.b: Update metadata file in disk
-    downloaded_set.update(dl_indexes)
-    save_download_playlist_meta(playlist_id, {**meta, "downloaded_indexes": sorted(downloaded_set)})
-    
-    # Step 2: Get Metadata for non-donwloaded videos in Step 1
-    task_manager.start_step(task_id, "fetch_metadata_errors")
-    unavailable_count = _fetch_unavailable_metadata(
-      task_manager, task_id, playlist_id, missing_indexes, meta, logger
-    )
-    task_manager.complete_step(task_id)
-
-    ## Step 2.a: Check fallback task status
-    if task_manager.is_cancelled(task_id):
-      task_manager.update_result(task_id, "Cancelled during metadata fetch")
-      return 
-
-    ## Step 2.b: Update metadata file in disk
-    downloaded_set.update(missing_indexes)
-    save_download_playlist_meta(playlist_id, {**meta, "downloaded_indexes": sorted(downloaded_set)})
-
-    task_manager.update_result(task_id, f"Downloaded {len(dl_indexes)} videos. {unavailable_count} unavailable.")
+    if not task_manager.is_cancelled(task_id) and missing_indexes:
+      task_manager.start_step(task_id, "fetch_metadata_errors")
+      try:
+        _fetch_unavailable_metadata(task_manager, task_id, playlist_id, missing_indexes, meta, logger)
+      except Exception:
+        # network could be down; mark as failed uniformly (not unavailable)
+        for idx in missing_indexes:
+          for vid, v in meta["videos"].items():
+            if v.get("index") == idx and v.get("status") not in ("downloaded", "unavailable"):
+              v["status"] = "failed"
+      finally:
+        task_manager.complete_step(task_id)
   except Exception as e:
     log(f"[{task_id}] download_limited_playlist_items: exception: {e}")
     log_trace()
     task_manager.update_error(task_id, str(e))
   finally:
+    reconcile_disk_state(playlist_id, meta)
+    meta["downloaded_indexes"] = rebuild_downloaded_indexes(meta)
+    save_download_playlist_meta(playlist_id, meta)
+
+    req_status = {"downloaded": 0, "partial": 0, "failed": 0, "unavailable": 0, "pending": 0}
+    idx_to_status = {v["index"]: v.get("status", "pending") for v in meta.get("videos", {}).values() if "index" in v}
+    for i in requested_indexes:
+      req_status[idx_to_status.get(i, "pending")] = req_status.get(idx_to_status.get(i, "pending"), 0) + 1
+
+    task_manager.update_result(
+      task_id,
+      (
+        f"Completed: {req_status['downloaded']} | "
+        f"Partial: {req_status['partial']} | "
+        f"Unavailable: {req_status['unavailable']} | "
+        f"Failed: {req_status['failed']} | "
+        f"Pending: {req_status['pending']}"
+      )
+    )
+
     log(f"[{task_id}] download_limited_playlist_items: finished (task left in manager for inspection)")
     # DO NOT delete the task here during debug — keep it for inspection.
     # task_manager.delete(task_id)  # remove only when you want to forget the task
-
-    try:
-      save_download_playlist_meta(playlist_id, {**meta, "downloaded_indexes": sorted(downloaded_set)})
-    except Exception as ex:
-      log(f"[{task_id}] failed to save meta in finally: {ex}")

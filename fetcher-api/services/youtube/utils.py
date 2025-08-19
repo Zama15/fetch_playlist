@@ -2,7 +2,12 @@ from typing import Dict, Any
 from pathlib import Path
 from json import load, dump
 from re import compile
+# from os import makedirs, fdopen, remove, replace
+from os.path import join, basename
+from glob import glob
+# from tempfile import mkstemp
 from .constants import DOWNLOAD_PATH
+# from utils.debug import log
 
 def select_thumbnail(thumbnails: list[dict], strategy: str = "highest_res") -> dict:
   if not thumbnails or not isinstance(thumbnails, list):
@@ -70,6 +75,30 @@ def load_downloaded_playlist_meta(playlist_id: str) -> Dict[str, Any]:
 def save_download_playlist_meta(playlist_id: str, meta: Dict[str, Any]):
   meta_path = playlist_meta_path(playlist_id)
   save_json(meta_path, meta)
+
+def reconcile_disk_state(playlist_id: str, meta: Dict[str, Any]):
+  base = f"{DOWNLOAD_PATH}/{playlist_id}"
+  for vid_id, v in meta.get("videos", {}).items():
+    playable = None
+    for ext in ("m4a", "mp4", "webm", "opus", "mkv", "mp3"):
+      matches = glob(join(base, f"{vid_id}*.{ext}"))
+      if matches:
+        playable = matches[0]
+        break
+
+    if playable:
+      v["status"] = "downloaded"
+      v["file"] = basename(playable)
+    else:
+      v["status"] = "partials"
+      v.pop("file", None)
+
+def rebuild_downloaded_indexes(meta):
+  out = []
+  for v in meta.get("videos", {}).values():
+    if v.get("status") == "downloaded" and isinstance(v.get("index"), int):
+      out.append(v["index"])
+  return sorted(set(out))
 
 class YDLLogger:
   _id_pattern = compile(r"\[youtube\]\s+([A-Za-z0-9_-]{11})")
